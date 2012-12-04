@@ -1,0 +1,6 @@
+#Installing Nokogiri
+href="http://nokogiri.org/tutorials/installing_nokogiri.html"
+
+brew install libxml2 libxslt
+brew link libxml2 libxslt
+gem install nokogiri
