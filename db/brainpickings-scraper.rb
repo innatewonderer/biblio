@@ -47,7 +47,13 @@ SQL
   books.each do |book|
     # puts "=================="
     title = book.at_css(".post_title h1").text
-    author = book.at_css(".post_title h2").text 
+    
+    if book.at_css(".post_title h2").nil?
+      author = 'unknown'
+    else
+      author = book.at_css(".post_title h2").text
+    end
+    
     # puts author
     link = book.at_css("a.post_title").attr('href')
     description = book.at_css("a.post_title p").text
