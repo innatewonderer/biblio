@@ -18,19 +18,42 @@ db.execute <<-SQL
   );
 SQL
 
-books_url = "http://bookpickings.brainpickings.org/"
-doc = Nokogiri::HTML(open(books_url))
-books = doc.css(".photo")
+# Scrape only first page
 
-books.each do |book|
-  title = book.at_css(".post_title h1").text
-  author = book.at_css(".post_title h2").text
-  link = book.at_css("a.post_title").attr('href')
-  description = book.at_css("a.post_title p").text
-  img = book.at_css(".post_thumbnail a img").attr('src')
+# books_url = "http://bookpickings.brainpickings.org/"
+# doc = Nokogiri::HTML(open(books_url))
+# books = doc.css(".photo")
 
-  db.execute("INSERT INTO books (title, author, link, description, img) 
-                VALUES (?, ?, ?, ?, ?)", title, author, link, description, img)
+# books.each do |book|
+#   title = book.at_css(".post_title h1").text
+#   author = book.at_css(".post_title h2").text
+#   link = book.at_css("a.post_title").attr('href')
+#   description = book.at_css("a.post_title p").text
+#   img = book.at_css(".post_thumbnail a img").attr('src')
+
+#   db.execute("INSERT INTO books (title, author, link, description, img) 
+#                 VALUES (?, ?, ?, ?, ?)", title, author, link, description, img)
+# end
+
+#Scraping all pages
+
+1.upto(50) do |page_number|
+  books_url = "http://bookpickings.brainpickings.org/"
+  books_url << 'page/' + page_number.to_s
+  doc = Nokogiri::HTML(open(books_url))
+
+  books = doc.css(".photo")
+
+  books.each do |book|
+    # puts "=================="
+    title = book.at_css(".post_title h1").text
+    author = book.at_css(".post_title h2").text 
+    # puts author
+    link = book.at_css("a.post_title").attr('href')
+    description = book.at_css("a.post_title p").text
+    img = book.at_css(".post_thumbnail a img").attr('src')
+
+    db.execute("INSERT INTO books (title, author, link, description, img) 
+                  # VALUES (?, ?, ?, ?, ?)", title, author, link, description, img)
+  end
 end
-
-
